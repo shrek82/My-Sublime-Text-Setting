@@ -1,0 +1,28 @@
+编译条件：
+安装了node 和 grunt
+
+grunt编译和目录说明：
+根目录assets一般为PHP或java或rails on ruby等开发框架私有目录，外面没有直接权限访问
+pubilc为公开目录，所以源码就放在assets里面的，也可以有你的less样式源码
+
+遵旨：一个模块一个文件夹，例如global,其中.build和dist是编译后产生的文件，不用理。
+用命令行进入:cd assets/js/global/
+
+执行：grunt build -f ,编译，过程：先将src目录对应的版本源码转换(transport)一份到.build，再根据.build里面的路径，合并(concat)相对路径模块到dist，（如果执行grunt build-all -f 还有压缩(uglify)一下dist里的代码）
+在我定义的任务里，“build”任务同时生成两套目录，一个以当前版本号命名用来记录这次版本，供管理员多个版本时候回头查看，一个以latest命名，当然有可以有更多套。我这里latest供正式使用，不然1.2.1这样的目录名称更新版本后网页需要同时修改，而latest名字固定下来后，网页一直用这个地址，反正编译的时候，latest总是和当前版本一样是最新的。
+当然，自己也可以定义更多任务，不如build2,执行grunt build2 ，等等
+
+我在我的grunt任务里配置了很多命令，具体查看Gruntfile.js文件最下面。
+build  -- 测试用的，包含地址转换、合并、迁移，只是不包含压缩
+build-all  --一条龙，加了压缩
+build-tran  -- 仅仅转换模块引用地址
+build-concat --仅仅合并
+build-uglify --仅仅压缩
+build-copy --仅仅迁移
+build-clean --清理.build
+
+注意每次任务，有时是根据源码，有时候是根据二次合并或转换来的，具体看案例
+
+注意注意：某些编译情况下，模块引入了外部模块（例如jquery），而当前模块路径下是没有这个模块的，grunt build会报错，不过没关系，编译的时候就加一个 -f 参数就跳过检查这个外部模块，例如“grunt build -f”，只要保证编译的时候，package.json配置里alias有jquery地址，编译后，require('jquery')能成为alias里的jquery地址，如编译成了require("lib/latest/lib")就对了; 正式使用的时候，保证seajs-config里面alias有jquery地址，就可以。
+
+我的一个麻烦：每个模块都需要拷贝一份node_modules，同一用一个node_modules，配置文件又不能单独，各位可以讨论下。
