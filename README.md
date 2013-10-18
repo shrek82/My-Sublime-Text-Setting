@@ -1,4 +1,4 @@
-Sublime-Text-javascript-snippet
+My Sublime Text3 Setting
 ===============================
 
-Sublime Text2|3 javascript snippet
+My Sublime Text3 Setting
